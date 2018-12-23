@@ -1,16 +1,8 @@
 # Cloudflare DDNS
 
-[![Travis CI Build][travis-badge]][travis]
-[![Docker Pulls][docker-pull]][docker] 
-[![Docker Stars][docker-star]][docker] 
-[![Docker Image Size][docker-size]][docker-tag] 
-[![Docker Layer][docker-layer]][docker-tag]
-[![License][license-badge]][license]
+# Getting Started
 
-The is a simple docker using curl to update DNS record on [Cloudflare][cloudflare]. Inspired by [rasmusbe/cloudflare-update-record.sh][rasmusbe].
-
-> The image has moved from [joshuaavalon/docker-cloudflare][joshuaavalon] to [joshava/cloudflare-ddns][docker].
-You can read [here][details] for more details.
+The is a simple docker using curl to update DNS record on Cloudflare.
 
 ## Usage
 
@@ -24,28 +16,47 @@ docker run \
 joshava/cloudflare-ddns
 ```
 
-## Release
+# Configuration
 
-`master` branch will be built by Travis CI weekly and push to `latest` and `arm32v6` to receive latest security update from upstream images.
+| Parameters   | Default | Description                                                                                                                                                                              |
+|--------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| *ZONE        |         | Domain, e.g. `example.com`.                                                                                                                                                              |
+| *HOST        |         | DNS record to be updated, e.g. `example.com`, `subdomain.example.com`.                                                                                                                   |
+| *EMAIL       |         | Cloudflare Email                                                                                                                                                                         |
+| *API         |         | Cloudflare API key                                                                                                                                                                       |
+| TTL          | 1       | Time to live for DNS record. Value of 1 is 'automatic'. Min value:120; Max value:2147483647.Time to live for DNS record. Value of 1 is 'automatic'. Min value:120; Max value:2147483647. |
+| PROXY        | true    | Whether the record is receiving the performance and security benefits of Cloudflare. `true` to enable; `false` to disable.                                                               |
+| FORCE_CREATE |         | When set, a record will be created if one does not exist already.                                                                                                                        |
+| RUNONCE      |         | When set, only a single update is attempted, and the script exists without setting up a cron process.                                                                                    |
 
-All arm32v6 images will have a `arm32v6` prefix on tags.
+* These parameters are required.
 
-## Documentation
+## Example
 
-Read the full documentation [here][documentation].
+### Running once interactively
 
-[travis-badge]: https://img.shields.io/travis/joshuaavalon/docker-cloudflare.svg
-[travis]: https://travis-ci.org/joshuaavalon/docker-cloudflare/
-[docker]: https://hub.docker.com/r/joshava/cloudflare-ddns/
-[docker-tag]: https://hub.docker.com/r/joshava/cloudflare-ddns/tags/
-[docker-pull]: https://img.shields.io/docker/pulls/joshava/cloudflare-ddns.svg
-[docker-star]: https://img.shields.io/docker/stars/joshava/cloudflare-ddns.svg
-[docker-size]: https://img.shields.io/microbadger/image-size/joshava/cloudflare-ddns.svg
-[docker-layer]: https://img.shields.io/microbadger/layers/joshava/cloudflare-ddns.svg
-[license]: https://github.com/docker-cloudflare/blob/master/LICENSE
-[license-badge]: https://img.shields.io/github/license/joshuaavalon/docker-cloudflare.svg
-[cloudflare]: https://www.cloudflare.com
-[rasmusbe]: https://gist.github.com/rasmusbe/fc2e270095f1a3b41348/
-[documentation]: https://joshuaavalon.github.io/docker-cloudflare/
-[joshuaavalon]: https://hub.docker.com/r/joshuaavalon/cloudflare-ddns/
-[details]: https://joshuaavalon.github.io/docker-cloudflare/faq/
+```bash
+docker run \
+    -e RUNONCE=1 \
+    -e ZONE=example.com \
+    -e HOST=example.com \
+    -e EMAIL=example@example.com \
+    -e API=1111111111111111 \
+    -e TTL=1 \
+    -e PROXY=true \
+joshava/cloudflare-ddns
+```
+
+### Running as a daemon
+
+```bash
+docker run \
+    -d \
+    -e ZONE=example.com \
+    -e HOST=example.com \
+    -e EMAIL=example@example.com \
+    -e API=1111111111111111 \
+    -e TTL=1 \
+    -e PROXY=true \
+joshava/cloudflare-ddns
+```
